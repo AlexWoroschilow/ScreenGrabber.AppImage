@@ -42,7 +42,6 @@ class ContentImageWidget(QtWidgets.QLabel):
     def __init__(self):
         super(ContentImageWidget, self).__init__()
         self.setAlignment(Qt.AlignTop)
-        self.setMinimumWidth(400)
 
         self.hover_effect = QtWidgets.QGraphicsDropShadowEffect()
         self.hover_effect.setBlurRadius(10)
@@ -51,14 +50,24 @@ class ContentImageWidget(QtWidgets.QLabel):
         self.original = None
 
     def resize(self, size):
-        width = size.width()
+        proportion = 297.0 / 210.0
+
+        height = size.height()
+        width = size.width() / 2.3
+
+        width_new = width
+        height_new = width * proportion
+        if not height_new or height_new >= height:
+            height_new = height - 20
+            width_new = height_new / proportion
+
+        self.setFixedHeight(height_new)
+        self.setFixedWidth(width_new)
 
         pixmap = self.original
         if not pixmap: return None
 
-        self.setPixmap(pixmap.scaledToWidth(
-            width / 2.5
-        ))
+        self.setPixmap(pixmap.scaledToWidth(width_new))
 
     def setPreview(self, pixmap: QtGui.QPixmap):
         if not pixmap: return None
