@@ -57,7 +57,7 @@ class ContentImageWidget(QtWidgets.QLabel):
         if not pixmap: return None
 
         self.setPixmap(pixmap.scaledToWidth(
-            width / 3
+            width / 2.5
         ))
 
     def setPreview(self, pixmap: QtGui.QPixmap):
