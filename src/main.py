@@ -23,6 +23,7 @@ os.chdir(os.path.dirname(
 
 import inject
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 
 import optparse
 import logging
@@ -33,6 +34,7 @@ class Application(QtWidgets.QApplication):
 
     def __init__(self, options=None, args=None):
         super(Application, self).__init__(sys.argv)
+        self.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
         self.setApplicationName('Screen grabber')
 

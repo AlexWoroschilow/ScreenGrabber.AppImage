@@ -16,8 +16,8 @@ from PyQt5 import QtGui
 from modules.window_screenshot import signals
 
 
-@inject.params(window='window', config='config', screenshot='screenshot')
-def onScreenshot(event=None, window=None, config=None, screenshot=None):
+@inject.params(config='config', screenshot='screenshot')
+def onScreenshot(event=None, config=None, screenshot=None):
     import logging
     import pytesseract
     from PIL import Image
