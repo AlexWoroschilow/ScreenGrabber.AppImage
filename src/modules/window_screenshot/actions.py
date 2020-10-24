@@ -40,7 +40,7 @@ def onScreenshot(event=None, config=None, screenshot=None):
     if not string: return None
 
     if not hasattr(signals, 'actionScreenshot'): return None
-    signals.actionScreenshot.activated.emit(image)
+    signals.actionScreenshot.activated.emit(pixmap)
 
     if not hasattr(signals, 'actionText'): return None
     signals.actionText.activated.emit(string)
