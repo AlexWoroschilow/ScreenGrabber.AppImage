@@ -10,37 +10,44 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import functools
+
 import inject
-from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-import functools
 
 
-class ToolbarWidget(QtWidgets.QWidget):
-
-    @inject.params(config='config', themes='themes')
-    def __init__(self, config=None, themes=None):
+class ToolbarWidget(QtWidgets.QScrollArea):
+    @inject.params(themes='themes')
+    def __init__(self, themes=None):
         super(ToolbarWidget, self).__init__()
-        self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        self.setContentsMargins(0, 0, 0, 0)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.setWidgetResizable(True)
 
         from .button import ToolbarButton
 
-        self.setLayout(QtWidgets.QHBoxLayout())
-        self.layout().setAlignment(Qt.AlignLeft)
+        self.container = QtWidgets.QWidget()
+        self.container.setLayout(QtWidgets.QHBoxLayout())
+        self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.setWidget(self.container)
 
         self.buttons = []
         for theme in themes.get_stylesheets():
-            button = ToolbarButton(self, theme.name, QtGui.QIcon(QtGui.QPixmap(theme.preview)))
+            button = ToolbarButton(self, theme.name, QtGui.QIcon(QtGui.QPixmap(theme.preview).scaledToWidth(90)))
             button.clicked.connect(functools.partial(self.onToggleTheme, theme=theme))
             button.theme = theme
-            self.layout().addWidget(button, -1)
+            self.addWidget(button)
 
             self.buttons.append(button)
 
         self.reload()
+
+    def addWidget(self, widget):
+        self.container.layout().addWidget(widget, -1)
 
     @inject.params(config='config')
     def reload(self, event=None, config=None):

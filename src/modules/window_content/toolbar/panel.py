@@ -17,7 +17,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 
-class ToolbarWidget(QtWidgets.QWidget):
+class ToolbarWidget(QtWidgets.QScrollArea):
     actionCleanup = QtCore.pyqtSignal(object)
     actionScreenshot = QtCore.pyqtSignal(object)
     actionExport = QtCore.pyqtSignal(object)
@@ -27,50 +27,60 @@ class ToolbarWidget(QtWidgets.QWidget):
     @inject.params(config='config')
     def __init__(self, config=None):
         super(ToolbarWidget, self).__init__()
-        self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.setWidgetResizable(True)
+
         self.setContentsMargins(0, 0, 0, 0)
 
         from .button import ToolbarButton
 
-        self.setLayout(QtWidgets.QHBoxLayout())
-        self.layout().setAlignment(Qt.AlignLeft)
+        self.container = QtWidgets.QWidget()
+        self.container.setLayout(QtWidgets.QHBoxLayout())
+        self.container.layout().setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.setWidget(self.container)
 
         self.open = ToolbarButton(self, "Open file", QtGui.QIcon('icons/open'))
         self.open.clicked.connect(self.actionOpen.emit)
         self.open.clicked.connect(self.reload)
-        self.layout().addWidget(self.open, -1)
+        self.addWidget(self.open)
 
         self.save = ToolbarButton(self, "Save", QtGui.QIcon('icons/save'))
         self.save.clicked.connect(self.actionSave.emit)
         self.save.clicked.connect(self.reload)
-        self.layout().addWidget(self.save, -1)
+        self.addWidget(self.save)
 
         self.export = ToolbarButton(self, "Save as", QtGui.QIcon('icons/export'))
         self.export.clicked.connect(self.actionExport.emit)
         self.export.clicked.connect(self.reload)
-        self.layout().addWidget(self.export, -1)
+        self.addWidget(self.export)
 
         self.mode = ToolbarButton(self, "...", QtGui.QIcon('icons/append'))
         self.mode.clicked.connect(self.onToggleMode)
         self.mode.clicked.connect(self.reload)
-        self.layout().addWidget(self.mode, -1)
+        self.addWidget(self.mode)
 
-        self.cleaner = ToolbarButton(self, "Letters only", QtGui.QIcon('icons/letters'))
+        self.cleaner = ToolbarButton(self, "Letters", QtGui.QIcon('icons/letters'))
         self.cleaner.clicked.connect(self.onToggleCleaner)
         self.cleaner.clicked.connect(self.reload)
-        self.layout().addWidget(self.cleaner, -1)
+        self.addWidget(self.cleaner)
 
         self.lowercase = ToolbarButton(self, "Lowercase", QtGui.QIcon('icons/lowercase'))
         self.lowercase.clicked.connect(self.onToggleLowercase)
         self.lowercase.clicked.connect(self.reload)
-        self.layout().addWidget(self.lowercase, -1)
+        self.addWidget(self.lowercase)
 
         self.cleanup = ToolbarButton(self, "Cleanup", QtGui.QIcon('icons/trash'))
         self.cleanup.clicked.connect(self.actionCleanup.emit)
         self.cleanup.clicked.connect(self.reload)
-        self.layout().addWidget(self.cleanup, -1)
+        self.addWidget(self.cleanup)
 
         self.reload()
+
+    def addWidget(self, widget):
+        self.container.layout().addWidget(widget)
 
     @inject.params(config='config')
     def reload(self, event=None, config=None):
@@ -82,7 +92,7 @@ class ToolbarWidget(QtWidgets.QWidget):
         self.cleanup.setChecked(False)
         self.export.setChecked(False)
 
-        self.mode.setText('Append text' if self.mode.isChecked() else 'Replace text')
+        self.mode.setText('Append' if self.mode.isChecked() else 'Replace')
         self.mode.setIcon(QtGui.QIcon('icons/append') if self.mode.isChecked() else QtGui.QIcon('icons/replace'))
 
     @inject.params(config='config')
