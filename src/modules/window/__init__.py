@@ -11,16 +11,13 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import inject
-import functools
-
-from .gui.window import MainWindow
-from .actions import ModuleActions
-
 from PyQt5 import QtWidgets
 
-from .gui import workspace
+from .actions import ModuleActions
 from .gui import dashboard
 from .gui import toolbar
+from .gui import workspace
+from .gui.window import MainWindow
 
 
 class WindowTabFactory(object):
@@ -55,7 +52,9 @@ class Loader(object):
     def _widget(self, config=None, content=None, header=None):
 
         widget = MainWindow()
+
         widget.setCentralWidget(QtWidgets.QWidget())
+        widget.centralWidget().setContentsMargins(0, 0, 0, 0)
         widget.centralWidget().setLayout(QtWidgets.QVBoxLayout())
         widget.centralWidget().layout().addWidget(header)
         widget.centralWidget().layout().addWidget(content)

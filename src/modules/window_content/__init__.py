@@ -26,10 +26,13 @@ class Loader(object):
     def _constructor(self):
         from modules.window_screenshot import signals
         from modules.window_content import dashboard
+        from modules.window_content import actions
 
         widget = dashboard.ContentWidget()
+        widget.actionLoaded.connect(actions.onActionLoad)
 
         if not hasattr(signals, 'actionText'): return widget
+        signals.actionScreenshot.activated.connect(widget.onActionImage)
         signals.actionText.activated.connect(widget.onActionText)
 
         return widget
@@ -44,6 +47,8 @@ class Loader(object):
         @window.workspace(name='Content')
         @inject.params(widget='content.widget')
         def window_dashboard(parent=None, widget=None):
+
+            widget.actionLoaded.emit(parent)
 
             shortcut = QtWidgets.QShortcut("Ctrl+S", parent)
             shortcut.activated.connect(actions.onActionSave)

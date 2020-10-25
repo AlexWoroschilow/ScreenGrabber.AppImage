@@ -23,6 +23,16 @@ def onActionCleanup(event=None, widget=None):
     return widget.setText(None)
 
 
+@inject.params(config='config', widget='content.widget')
+def onActionLoad(parent=None, config=None, widget=None):
+    config_file = config.get('content.file', '')
+    if os.path.exists(config_file) and os.path.isfile(config_file):
+        parent.setWindowTitle('Screen grabber - {}'.format(os.path.basename(config_file)))
+        with open(config_file, 'r') as stream:
+            widget.setText(stream.read())
+            return stream.close()
+
+
 @inject.params(widget='content.widget', config='config', window='window')
 def onActionOpen(event=None, widget=None, config=None, window=None):
     selector = QtWidgets.QFileDialog()
