@@ -19,8 +19,18 @@ from modules.window_content import signals
 
 
 @inject.params(widget='content.widget')
+def onActionUndo(event=None, widget=None):
+    return widget.undo()
+
+
+@inject.params(widget='content.widget')
+def onActionRedo(event=None, widget=None):
+    return widget.redo()
+
+
+@inject.params(widget='content.widget')
 def onActionCleanup(event=None, widget=None):
-    return widget.setText(None)
+    return widget.clear()
 
 
 @inject.params(config='config', widget='content.widget')

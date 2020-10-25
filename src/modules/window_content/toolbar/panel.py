@@ -23,6 +23,8 @@ class ToolbarWidget(QtWidgets.QScrollArea):
     actionExport = QtCore.pyqtSignal(object)
     actionSave = QtCore.pyqtSignal(object)
     actionOpen = QtCore.pyqtSignal(object)
+    actionUndo = QtCore.pyqtSignal(object)
+    actionRedo = QtCore.pyqtSignal(object)
 
     @inject.params(config='config')
     def __init__(self, config=None):
@@ -56,6 +58,16 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.export.clicked.connect(self.actionExport.emit)
         self.export.clicked.connect(self.reload)
         self.addWidget(self.export)
+
+        self.undo = ToolbarButton(self, "Undo", QtGui.QIcon('icons/undo'))
+        self.undo.clicked.connect(self.actionUndo.emit)
+        self.undo.clicked.connect(self.reload)
+        self.addWidget(self.undo)
+
+        self.redo = ToolbarButton(self, "Undo", QtGui.QIcon('icons/redo'))
+        self.redo.clicked.connect(self.actionRedo.emit)
+        self.redo.clicked.connect(self.reload)
+        self.addWidget(self.redo)
 
         self.mode = ToolbarButton(self, "...", QtGui.QIcon('icons/append'))
         self.mode.clicked.connect(self.onToggleMode)
@@ -91,6 +103,8 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.save.setChecked(False)
         self.cleanup.setChecked(False)
         self.export.setChecked(False)
+        self.redo.setChecked(False)
+        self.undo.setChecked(False)
 
         self.mode.setText('Append' if self.mode.isChecked() else 'Replace')
         self.mode.setIcon(QtGui.QIcon('icons/append') if self.mode.isChecked() else QtGui.QIcon('icons/replace'))

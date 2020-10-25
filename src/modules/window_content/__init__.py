@@ -59,6 +59,12 @@ class Loader(object):
             shortcut = QtWidgets.QShortcut("Ctrl+O", parent)
             shortcut.activated.connect(actions.onActionOpen)
 
+            shortcut = QtWidgets.QShortcut("Ctrl+Z", parent)
+            shortcut.activated.connect(actions.onActionUndo)
+
+            shortcut = QtWidgets.QShortcut("Ctrl+Y", parent)
+            shortcut.activated.connect(actions.onActionRedo)
+
             return widget
 
         @window.toolbar(name='Content', focus=False, position=1)
@@ -79,6 +85,12 @@ class Loader(object):
 
             if not hasattr(widget, 'actionOpen'): return widget
             widget.actionOpen.connect(actions.onActionOpen)
+
+            if not hasattr(widget, 'actionUndo'): return widget
+            widget.actionUndo.connect(actions.onActionUndo)
+
+            if not hasattr(widget, 'actionRedo'): return widget
+            widget.actionRedo.connect(actions.onActionRedo)
 
             if not hasattr(parent, 'actionReload'): return widget
             parent.actionReload.connect(widget.reload)

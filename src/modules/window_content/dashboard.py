@@ -33,8 +33,27 @@ class ContentTextWidget(QtWidgets.QTextEdit):
             return self.verticalScrollBar().setValue(maximum)
 
         self.setText(cleaner(event))
+
         maximum = self.verticalScrollBar().maximum()
         return self.verticalScrollBar().setValue(maximum)
+
+    def setText(self, text):
+        document = self.document()
+        if not document: return None
+
+        cursor = QtGui.QTextCursor(document.firstBlock())
+        cursor.select(QtGui.QTextCursor.Document)
+        cursor.insertText(text)
+        return cursor.deleteChar()
+
+    def clear(self):
+        document = self.document()
+        if not document: return None
+
+        cursor = QtGui.QTextCursor(document.firstBlock())
+        cursor.select(QtGui.QTextCursor.Document)
+        cursor.removeSelectedText()
+        return cursor.deleteChar()
 
 
 class ContentImageWidget(QtWidgets.QLabel):
@@ -141,6 +160,27 @@ class ContentWidget(QtWidgets.QTextEdit):
         self.statistic.setText("Lines: {}, Characters:  {}".format(
             document.lineCount(), document.characterCount()
         ))
+
+    def clear(self):
+        document = self.editor.document()
+        if not document: return None
+
+        cursor = QtGui.QTextCursor(document.firstBlock())
+        cursor.select(QtGui.QTextCursor.Document)
+        cursor.removeSelectedText()
+        return cursor.deleteChar()
+
+    def undo(self):
+        document = self.editor.document()
+        if not document: return None
+
+        return document.undo()
+
+    def redo(self):
+        document = self.editor.document()
+        if not document: return None
+
+        return document.redo()
 
     def text(self):
         if not self.editor: return None
