@@ -29,7 +29,7 @@ ToolbarWidget::pane { background: #00313b; border: none; margin: 0px; border-bot
 ToolbarWidget::tab-bar { left: 0px; color: #4f4f4f; border: none; }
 ToolbarWidget QTabBar { background: #00313b; color: #4f4f4f; }
 ToolbarWidget QTabBar::tab:selected { background: #00313b; border-bottom: 1px solid #2ca7f8; border-right: none;  color: #2ca7f8;  }
-ToolbarWidget QTabBar::tab { background: #00212b; color: #2ca7f8; border-bottom: 1px solid #00212b; border-right: none; padding: 5px 10px; }
+ToolbarWidget QTabBar::tab { background: #00212b; color: #2ca7f8; border-bottom: 1px solid #00212b; border-right: none; padding: 5px 15px; }
 ToolbarWidget QTabBar::close-button { image: url(icons/close); }
 
 

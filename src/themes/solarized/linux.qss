@@ -23,14 +23,14 @@ QMenu::icon:checked { background: #fdf6e3; border: 1px inset #fdf6e3; position: 
 QToolButton { background: #fdf6e3; border: 2px solid #fdf6e3; border-radius: 3px; margin: 0px; color: #4d5357; }
 QToolButton::checked { background: #ded8c5; border: 1px solid #cec8b5; border-radius: 3px; }
 
-ToolbarWidget { background: #eee8d5; margin: 0px; border-bottom: 1px solid #4f4f4f;}
+ToolbarWidget { background: #eee8d5; margin: 0px; border-bottom: 1px solid #4f4f4f; }
 ToolbarWidget QWidget { background: #eee8d5; border: none; }
 
 ToolbarWidget::pane { border: none; margin: 0px; border-bottom: 1px solid #cec8b5; }
 ToolbarWidget::tab-bar { left: 0px; color: #4f4f4f; border: none; }
 ToolbarWidget QTabBar { background: #fafafa; color: #4f4f4f; }
 ToolbarWidget QTabBar::tab:selected { background: #eee8d5; border-bottom: 1px solid #cec8b5; border-right: none;  color: #4d5357;  }
-ToolbarWidget QTabBar::tab { background: #fdf6e3; color: #4d5357; border-bottom: 1px solid #fafafa; border-right: none; padding: 5px 10px; }
+ToolbarWidget QTabBar::tab { background: #fdf6e3; color: #4d5357; border-bottom: 1px solid #fafafa; border-right: none; padding: 5px 15px; }
 ToolbarWidget QTabBar::close-button { image: url(icons/close); }
 
 ContentWidget { border: none; background-color: #eee8d5; }
