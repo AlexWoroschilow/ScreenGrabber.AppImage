@@ -15,31 +15,23 @@ import inject
 from .service import ServiceTheme
 
 
-class Loader(object):
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    @inject.params(config='config')
+    def _constructor(config=None):
+        themes_default = config.get('themes.default', 'themes/')
+        themes_custom = config.get('themes.custom', '~/.config/AOD-Dictionary/themes')
 
-    def __enter__(self):
-        return self
+        return ServiceTheme([themes_default, themes_custom])
 
-    def __exit__(self, type, value, traceback):
-        pass
+    binder.bind_to_constructor('themes', _constructor)
 
-    def configure(self, binder, options, args):
-        @inject.params(config='config')
-        def themes_service(config=None):
-            themes_default = config.get('themes.default', 'themes/')
-            themes_custom = config.get('themes.custom', '~/.config/AOD-Dictionary/themes')
 
-            return ServiceTheme([themes_default, themes_custom])
+def bootstrap(options: {} = None, args: [] = None):
+    from modules import qt5_window
+    from .toolbar.panel import ToolbarWidget
 
-        binder.bind_to_constructor('themes', themes_service)
-
-    @inject.params(themes='themes')
-    def boot(self, options=None, args=None, themes=None):
-        from modules import qt5_window
-
-        @qt5_window.toolbar(name='Themes', focus=False, position=6)
-        def window_toolbar(parent=None):
-            from .toolbar.panel import ToolbarWidget
-            widget = ToolbarWidget()
-            parent.actionReload.connect(widget.reload)
-            return widget
+    @qt5_window.toolbar(name='Themes', focus=False, position=6)
+    def window_toolbar(parent=None):
+        widget = ToolbarWidget()
+        parent.actionReload.connect(widget.reload)
+        return widget

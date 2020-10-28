@@ -15,13 +15,5 @@ import inject
 from .service import DictionaryManager
 
 
-class Loader(object):
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
-
-    def configure(self, binder, options=None, args=None):
-        binder.bind_to_constructor('dictionary', DictionaryManager)
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    binder.bind_to_constructor('dictionary', DictionaryManager)

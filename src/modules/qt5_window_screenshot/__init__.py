@@ -14,37 +14,29 @@ import inject
 from PyQt5 import QtWidgets
 
 
-class Loader(object):
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    from .screenshot.screenshot import Screenshot
+    binder.bind('screenshot', Screenshot)
 
-    def __enter__(self):
-        return self
 
-    def __exit__(self, type, value, traceback):
-        pass
+@inject.params(parent='window')
+def bootstrap(options: {} = None, args: [] = None, parent=None):
+    from modules import qt5_window
+    from modules.qt5_window_screenshot import actions
+    from modules.qt5_window_screenshot import signals
 
-    def configure(self, binder, options=None, args=None):
-        from .screenshot.screenshot import Screenshot
-        binder.bind('screenshot', Screenshot)
+    shortcut = QtWidgets.QShortcut("Ctrl+G", parent)
+    shortcut.activated.connect(actions.onScreenshot)
 
-    @inject.params(parent='window')
-    def boot(self, options=None, args=None, parent=None):
+    @qt5_window.toolbar(name='Screenshot', focus=True, position=0)
+    def window_toolbar(parent=None):
+        from .toolbar.panel import ToolbarWidget
+        widget = ToolbarWidget()
 
-        from modules import qt5_window
-        from modules.qt5_window_screenshot import actions
-        from modules.qt5_window_screenshot import signals
+        if not widget.actionScreenshot: return widget
+        widget.actionScreenshot.connect(actions.onScreenshot)
 
-        shortcut = QtWidgets.QShortcut("Ctrl+G", parent)
-        shortcut.activated.connect(actions.onScreenshot)
+        if not parent.actionReload: return widget
+        parent.actionReload.connect(widget.reload)
 
-        @qt5_window.toolbar(name='Screenshot', focus=True, position=0)
-        def window_toolbar(parent=None):
-            from .toolbar.panel import ToolbarWidget
-            widget = ToolbarWidget()
-
-            if not widget.actionScreenshot: return widget
-            widget.actionScreenshot.connect(actions.onScreenshot)
-
-            if not parent.actionReload: return widget
-            parent.actionReload.connect(widget.reload)
-
-            return widget
+        return widget

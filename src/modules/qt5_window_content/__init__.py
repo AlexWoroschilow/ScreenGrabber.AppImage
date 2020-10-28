@@ -15,15 +15,8 @@ import inject
 from PyQt5 import QtWidgets
 
 
-class Loader(object):
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
-
-    def _constructor(self):
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    def _constructor():
         from modules.qt5_window_screenshot import signals
         from modules.qt5_window_content import dashboard
         from modules.qt5_window_content import actions
@@ -37,62 +30,62 @@ class Loader(object):
 
         return widget
 
-    def configure(self, binder: inject.Binder, options=None, args=None):
-        binder.bind_to_constructor('content.widget', self._constructor)
+    binder.bind_to_constructor('content.widget', _constructor)
 
-    def boot(self, options=None, args=None):
-        from modules import qt5_window
-        from modules.qt5_window_content import actions
 
-        @qt5_window.workspace(name='Content')
-        @inject.params(widget='content.widget')
-        def window_dashboard(parent=None, widget=None):
+def bootstrap(options: {} = None, args: [] = None):
+    from modules import qt5_window
+    from modules.qt5_window_content import actions
 
-            widget.actionLoaded.emit(parent)
+    @qt5_window.workspace(name='Content')
+    @inject.params(widget='content.widget')
+    def window_dashboard(parent=None, widget=None):
 
-            shortcut = QtWidgets.QShortcut("Ctrl+S", parent)
-            shortcut.activated.connect(actions.onActionSave)
+        widget.actionLoaded.emit(parent)
 
-            shortcut = QtWidgets.QShortcut("Ctrl+E", parent)
-            shortcut.activated.connect(actions.onActionExport)
+        shortcut = QtWidgets.QShortcut("Ctrl+S", parent)
+        shortcut.activated.connect(actions.onActionSave)
 
-            shortcut = QtWidgets.QShortcut("Ctrl+O", parent)
-            shortcut.activated.connect(actions.onActionOpen)
+        shortcut = QtWidgets.QShortcut("Ctrl+E", parent)
+        shortcut.activated.connect(actions.onActionExport)
 
-            shortcut = QtWidgets.QShortcut("Ctrl+Z", parent)
-            shortcut.activated.connect(actions.onActionUndo)
+        shortcut = QtWidgets.QShortcut("Ctrl+O", parent)
+        shortcut.activated.connect(actions.onActionOpen)
 
-            shortcut = QtWidgets.QShortcut("Ctrl+Y", parent)
-            shortcut.activated.connect(actions.onActionRedo)
+        shortcut = QtWidgets.QShortcut("Ctrl+Z", parent)
+        shortcut.activated.connect(actions.onActionUndo)
 
-            return widget
+        shortcut = QtWidgets.QShortcut("Ctrl+Y", parent)
+        shortcut.activated.connect(actions.onActionRedo)
 
-        @qt5_window.toolbar(name='Content', focus=False, position=1)
-        @inject.params(content='content.widget')
-        def window_toolbar(parent=None, content=None):
+        return widget
 
-            from .toolbar.panel import ToolbarWidget
-            widget = ToolbarWidget()
+    @qt5_window.toolbar(name='Content', focus=False, position=1)
+    @inject.params(content='content.widget')
+    def window_toolbar(parent=None, content=None):
 
-            if not hasattr(widget, 'actionCleanup'): return widget
-            widget.actionCleanup.connect(actions.onActionCleanup)
+        from .toolbar.panel import ToolbarWidget
+        widget = ToolbarWidget()
 
-            if not hasattr(widget, 'actionSave'): return widget
-            widget.actionSave.connect(actions.onActionSave)
+        if not hasattr(widget, 'actionCleanup'): return widget
+        widget.actionCleanup.connect(actions.onActionCleanup)
 
-            if not hasattr(widget, 'actionExport'): return widget
-            widget.actionExport.connect(actions.onActionExport)
+        if not hasattr(widget, 'actionSave'): return widget
+        widget.actionSave.connect(actions.onActionSave)
 
-            if not hasattr(widget, 'actionOpen'): return widget
-            widget.actionOpen.connect(actions.onActionOpen)
+        if not hasattr(widget, 'actionExport'): return widget
+        widget.actionExport.connect(actions.onActionExport)
 
-            if not hasattr(widget, 'actionUndo'): return widget
-            widget.actionUndo.connect(actions.onActionUndo)
+        if not hasattr(widget, 'actionOpen'): return widget
+        widget.actionOpen.connect(actions.onActionOpen)
 
-            if not hasattr(widget, 'actionRedo'): return widget
-            widget.actionRedo.connect(actions.onActionRedo)
+        if not hasattr(widget, 'actionUndo'): return widget
+        widget.actionUndo.connect(actions.onActionUndo)
 
-            if not hasattr(parent, 'actionReload'): return widget
-            parent.actionReload.connect(widget.reload)
+        if not hasattr(widget, 'actionRedo'): return widget
+        widget.actionRedo.connect(actions.onActionRedo)
 
-            return widget
+        if not hasattr(parent, 'actionReload'): return widget
+        parent.actionReload.connect(widget.reload)
+
+        return widget

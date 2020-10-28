@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
+# Copyright 2020 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,14 +35,15 @@ class Kernel(object):
 
         logger = logging.getLogger('kernel')
         for module in self.modules:
-            if not hasattr(module, 'boot'):
+            if not hasattr(module, 'bootstrap'):
                 continue
 
-            loader_boot = getattr(module, 'boot')
-            if not callable(loader_boot): continue
+            bootstrap = getattr(module, 'bootstrap')
+            if not callable(bootstrap):
+                continue
 
             logger.debug("booting: {}".format(module))
-            module.boot(options, args)
+            bootstrap(options, args)
 
     def _candidates(self, sources: [] = None):
         for mask in sources:
@@ -72,20 +72,15 @@ class Kernel(object):
 
                 module = spec.loader.load_module()
                 if not module: continue
-
                 logger.debug("found: {}".format(source))
-                if not hasattr(module, 'Loader'):
-                    continue
 
-                module_class = getattr(module, 'Loader')
-                with module_class() as loader:
-                    if hasattr(loader, 'enabled'):
-                        enabled = getattr(loader, 'enabled')
-                        if not callable(enabled): continue
-                        if not enabled(options, args): continue
+                if hasattr(module, 'enabled') and callable(module, 'enabled'):
+                    enabled = getattr(module, 'enabled')
+                    if not enabled(options, args):
+                        continue
 
-                    logger.debug("loading: {}".format(loader))
-                    modules.append(loader)
+                logger.debug("loading: {}".format(module))
+                modules.append(module)
 
             except (SyntaxError, RuntimeError) as err:
                 logger.critical("{}: {}".format(source, err))

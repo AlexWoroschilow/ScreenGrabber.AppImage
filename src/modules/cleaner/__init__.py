@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
+# Copyright 2020 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +12,8 @@
 import inject
 
 
-class Loader(object):
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        pass
-
-    @staticmethod
-    def provider():
-
+def configure(binder: inject.Binder, options: {} = None, args: {} = None):
+    def _provider():
         @inject.params(config='config')
         def clean(text=None, config=None):
 
@@ -41,5 +31,4 @@ class Loader(object):
 
         return clean
 
-    def configure(self, binder, options=None, args=None):
-        binder.bind_to_provider('cleaner', self.provider)
+    binder.bind_to_provider('cleaner', _provider)
