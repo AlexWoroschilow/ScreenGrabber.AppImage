@@ -35,9 +35,9 @@ class Loader(object):
 
     @inject.params(themes='themes')
     def boot(self, options=None, args=None, themes=None):
-        from modules import window
+        from modules import qt5_window
 
-        @window.toolbar(name='Themes', focus=False, position=6)
+        @qt5_window.toolbar(name='Themes', focus=False, position=6)
         def window_toolbar(parent=None):
             from .toolbar.panel import ToolbarWidget
             widget = ToolbarWidget()

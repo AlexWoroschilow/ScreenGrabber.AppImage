@@ -24,9 +24,9 @@ class Loader(object):
         pass
 
     def _constructor(self):
-        from modules.window_screenshot import signals
-        from modules.window_content import dashboard
-        from modules.window_content import actions
+        from modules.qt5_window_screenshot import signals
+        from modules.qt5_window_content import dashboard
+        from modules.qt5_window_content import actions
 
         widget = dashboard.ContentWidget()
         widget.actionLoaded.connect(actions.onActionLoad)
@@ -41,10 +41,10 @@ class Loader(object):
         binder.bind_to_constructor('content.widget', self._constructor)
 
     def boot(self, options=None, args=None):
-        from modules import window
-        from modules.window_content import actions
+        from modules import qt5_window
+        from modules.qt5_window_content import actions
 
-        @window.workspace(name='Content')
+        @qt5_window.workspace(name='Content')
         @inject.params(widget='content.widget')
         def window_dashboard(parent=None, widget=None):
 
@@ -67,7 +67,7 @@ class Loader(object):
 
             return widget
 
-        @window.toolbar(name='Content', focus=False, position=1)
+        @qt5_window.toolbar(name='Content', focus=False, position=1)
         @inject.params(content='content.widget')
         def window_toolbar(parent=None, content=None):
 

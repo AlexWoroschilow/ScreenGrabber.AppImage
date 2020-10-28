@@ -15,7 +15,7 @@ import os
 import inject
 from PyQt5 import QtWidgets
 
-from modules.window_content import signals
+from modules.qt5_window_content import signals
 
 
 @inject.params(widget='content.widget')

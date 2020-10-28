@@ -14,46 +14,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import sys
-from importlib import util
 
 os.chdir(os.path.dirname(
     os.path.abspath(sys.argv[0]) \
         if len(sys.argv) else \
         os.path.abspath(__file__)))
 
-import inject
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
-
 import optparse
 import logging
 
-
-class Application(QtWidgets.QApplication):
-    kernel = None
-
-    def __init__(self, options=None, args=None):
-        super(Application, self).__init__(sys.argv)
-        self.setAttribute(Qt.AA_UseHighDpiPixmaps)
-
-        self.setApplicationName('Screen grabber')
-
-        spec = util.find_spec('lib.kernel')
-        module = spec.loader.load_module()
-        if module is None: return None
-
-        self.kernel = module.Kernel(options, args)
-
-    @inject.params(window='window')
-    def exec_(self, options, args, window):
-        if window is None:
-            return None
-
-        window.exit.connect(self.exit)
-        window.show()
-
-        return super(Application, self).exec_()
-
+from modules.qt5_application import desktop
 
 if __name__ == "__main__":
     parser = optparse.OptionParser()
@@ -71,5 +41,5 @@ if __name__ == "__main__":
     log_format = '[%(relativeCreated)d][%(name)s] %(levelname)s - %(message)s'
     logging.basicConfig(level=options.loglevel, format=log_format)
 
-    application = Application(options, args)
+    application = desktop.Application(options, args)
     sys.exit(application.exec_(options, args))

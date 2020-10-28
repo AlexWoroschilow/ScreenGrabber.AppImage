@@ -29,14 +29,14 @@ class Loader(object):
     @inject.params(parent='window')
     def boot(self, options=None, args=None, parent=None):
 
-        from modules import window
-        from modules.window_screenshot import actions
-        from modules.window_screenshot import signals
+        from modules import qt5_window
+        from modules.qt5_window_screenshot import actions
+        from modules.qt5_window_screenshot import signals
 
         shortcut = QtWidgets.QShortcut("Ctrl+G", parent)
         shortcut.activated.connect(actions.onScreenshot)
 
-        @window.toolbar(name='Screenshot', focus=True, position=0)
+        @qt5_window.toolbar(name='Screenshot', focus=True, position=0)
         def window_toolbar(parent=None):
             from .toolbar.panel import ToolbarWidget
             widget = ToolbarWidget()

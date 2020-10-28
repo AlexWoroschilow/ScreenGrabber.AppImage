@@ -10,22 +10,25 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
+import functools
 import glob
 import logging
+import os
+from importlib import util
+
 import inject
-import importlib
-import functools
 
 
 class Kernel(object):
 
-    def __init__(self, options=None, args=None, sources=["plugins/**/__init__.py", "modules/**/__init__.py"]):
+    def __init__(self, options: {} = None, args: [] = None, sources: [] = ["plugins/**", "modules/**"]):
 
-        self.modules = self.get_modules(sources, options, args)
+        self.modules = self._modules(
+            sources, options, args
+        )
 
         inject.configure(functools.partial(
-            self.configure,
+            self._configure,
             modules=self.modules,
             options=options,
             args=args
@@ -37,31 +40,39 @@ class Kernel(object):
                 continue
 
             loader_boot = getattr(module, 'boot')
-            if not callable(loader_boot):
-                continue
+            if not callable(loader_boot): continue
 
             logger.debug("booting: {}".format(module))
             module.boot(options, args)
 
-    @staticmethod
-    def get_module_candidates(sources=None):
+    def _candidates(self, sources: [] = None):
         for mask in sources:
+            if not mask:
+                continue
+
             for source in glob.glob(mask):
-                if not os.path.exists(source):
+                if not source:
                     continue
 
-                yield source.replace('/', '.') \
-                    .replace('.py', '')
+                if not os.path.isdir(source):
+                    continue
 
-    def get_modules(self, sources=None, options=None, args=None):
+                yield source.replace('/', '.')
+
+    def _modules(self, sources: [] = None, options: {} = None, args: [] = None):
 
         modules = []
 
         logger = logging.getLogger('kernel')
-        for source in self.get_module_candidates(sources):
+        for source in self._candidates(sources):
             try:
 
-                module = importlib.import_module(source, False)
+                spec = util.find_spec(source)
+                if not spec.loader: continue
+
+                module = spec.loader.load_module()
+                if not module: continue
+
                 logger.debug("found: {}".format(source))
                 if not hasattr(module, 'Loader'):
                     continue
@@ -70,8 +81,8 @@ class Kernel(object):
                 with module_class() as loader:
                     if hasattr(loader, 'enabled'):
                         enabled = getattr(loader, 'enabled')
-                        if callable(enabled) and not enabled(options, args):
-                            continue
+                        if not callable(enabled): continue
+                        if not enabled(options, args): continue
 
                     logger.debug("loading: {}".format(loader))
                     modules.append(loader)
@@ -82,7 +93,7 @@ class Kernel(object):
 
         return modules
 
-    def configure(self, binder, modules, options=None, args=None):
+    def _configure(self, binder: inject.Binder, modules: [], options=None, args=None):
 
         logger = logging.getLogger('kernel')
         for module in modules:
@@ -93,8 +104,7 @@ class Kernel(object):
                     continue
 
                 configure = getattr(module, 'configure')
-                if not callable(configure):
-                    continue
+                if not callable(configure): continue
 
                 logger.debug("configuring: {}".format(module))
 

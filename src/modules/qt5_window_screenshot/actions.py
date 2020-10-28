@@ -13,7 +13,7 @@
 import inject
 from PyQt5 import QtGui
 
-from modules.window_screenshot import signals
+from modules.qt5_window_screenshot import signals
 
 
 @inject.params(config='config', screenshot='screenshot')

@@ -49,7 +49,7 @@ class Screenshot(QtWidgets.QGraphicsView):
         position = self.cursor().pos()
         if not position: raise Exception('Position unknown')
 
-        # Init window
+        # Init qt5_window
         self.pixbuf = self.getscreenshot()
         if not self.pixbuf: raise Exception('Empty screenshot')
 
