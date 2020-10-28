@@ -18,7 +18,7 @@ from PyQt5 import QtWidgets
 def configure(binder: inject.Binder, options: {} = None, args: {} = None):
     def _constructor():
         from modules.qt5_window_screenshot import signals
-        from modules.qt5_window_content import dashboard
+        from qt5_window_content.workspace import dashboard
         from modules.qt5_window_content import actions
 
         widget = dashboard.ContentWidget()

@@ -16,10 +16,10 @@ import inject
 from PyQt5 import QtWidgets
 
 from .actions import ModuleActions
-from .gui import dashboard
-from .gui import toolbar
-from .gui import workspace
-from .gui.window import MainWindow
+from .workspace import dashboard
+from .workspace import toolbar
+from .workspace import workspace
+from .workspace.window import MainWindow
 
 
 def configure(binder: inject.Binder, options: {} = None, args: {} = None):
@@ -45,8 +45,8 @@ def configure(binder: inject.Binder, options: {} = None, args: {} = None):
         _window, actions=ModuleActions()
     ))
 
-    from .gui.content import WindowContent
+    from .workspace.content import WindowContent
     binder.bind_to_constructor('window.content', WindowContent)
 
-    from .gui.header import ToolbarWidget
+    from .workspace.header import ToolbarWidget
     binder.bind_to_constructor('window.header', ToolbarWidget)
