@@ -13,22 +13,6 @@
 import inject
 
 
-@inject.params(window='window')
-def dashboard(*args, **kwargs):
-    from .window import MainWindow
-    window: MainWindow = kwargs.get('window')
-
-    def wrapper1(*args, **kwargs):
-        assert (callable(args[0]))
-
-        widget = args[0](parent=window)
-        window.setCentralWidget(widget)
-
-        return args[0]
-
-    return wrapper1
-
-
 @inject.params(window='window', content='window.content')
 def workspace(*args, **kwargs):
     name = kwargs.get('name', 'New Tab')

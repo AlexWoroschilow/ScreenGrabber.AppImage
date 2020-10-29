@@ -116,7 +116,6 @@ appimage:
 	cp -r --force $(PWD)/build/usr/lib64/qt5/plugins/platforms $(PWD)/build/AppDir/python/bin/
 	cp -r --force $(PWD)/src/default $(PWD)/build/AppDir/application/
 	cp -r --force $(PWD)/src/icons $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/lib $(PWD)/build/AppDir/application/
 	cp -r --force $(PWD)/src/modules $(PWD)/build/AppDir/application/
 	cp -r --force $(PWD)/src/themes $(PWD)/build/AppDir/application/
 	cp -r --force $(PWD)/src/main.py $(PWD)/build/AppDir/application/

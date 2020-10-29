@@ -16,7 +16,6 @@ import inject
 from PyQt5 import QtWidgets
 
 from .actions import ModuleActions
-from .workspace import dashboard
 from .workspace import toolbar
 from .workspace import workspace
 from .workspace.window import MainWindow
