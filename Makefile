@@ -109,12 +109,9 @@ appimage:
 	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/l/libwebp-1.1.0-3.fc32.x86_64.rpm
 	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
 
-
-
 	cp -r --force $(PWD)/AppDir/* $(PWD)/build/AppDir/
 	cp -r --force $(PWD)/build/usr/* $(PWD)/build/AppDir/python/
 	cp -r --force $(PWD)/build/usr/lib64/qt5/plugins/platforms $(PWD)/build/AppDir/python/bin/
-	cp -r --force $(PWD)/src/default $(PWD)/build/AppDir/application/
 	cp -r --force $(PWD)/src/icons $(PWD)/build/AppDir/application/
 	cp -r --force $(PWD)/src/modules $(PWD)/build/AppDir/application/
 	cp -r --force $(PWD)/src/themes $(PWD)/build/AppDir/application/

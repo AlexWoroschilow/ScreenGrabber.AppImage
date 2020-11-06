@@ -50,10 +50,6 @@ ls /etc/ssl/certs/ca-certificates.crt > /dev/null 2>&1 && REQUESTS_CA_BUNDLE=/et
 ls /etc/pki/tls/certs/ca-bundle.crt  > /dev/null 2>&1 && REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt
 export REQUESTS_CA_BUNDLE
 
-QT_DEBUG_PLUGINS=1
-export QT_DEBUG_PLUGINS
-
-
 cd ${OWD}
 
 case "$1" in
