@@ -10,17 +10,3 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import functools
-
-import inject
-
-from .services import ConfigService
-
-
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    def _construct(options: {} = None, args: [] = None):
-        return ConfigService(options.config)
-
-    binder.bind_to_constructor('config', functools.partial(
-        _construct, options=options, args=args
-    ))

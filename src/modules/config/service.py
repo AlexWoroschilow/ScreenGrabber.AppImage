@@ -12,11 +12,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import hexdi
 
+from .file.parser import ConfigFileParser
 
-class ModuleActions(object):
 
-    @hexdi.inject('config')
-    def resizeActionEvent(self, event=None, config=None):
-        config.set('window.width', event.size().width())
-        config.set('window.height', event.size().height())
-        return event.accept()
+@hexdi.permanent('config')
+class ServiceConfigInstance(ConfigFileParser):
+    @hexdi.inject('optparse')
+    def __init__(self, parser):
+        (options, args) = parser.parse_args()
+        super(ServiceConfigInstance, self).__init__(file=options.config)

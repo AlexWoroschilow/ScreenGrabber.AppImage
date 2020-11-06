@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import optparse
 # -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
@@ -15,27 +16,35 @@
 import os
 import sys
 
+import hexdi
+
 os.chdir(os.path.dirname(
     os.path.abspath(sys.argv[0]) \
         if len(sys.argv) else \
         os.path.abspath(__file__)))
 
-import optparse
 import logging
 
 from modules.qt5_application import desktop
 
+
+@hexdi.permanent('optparse')
+class OptionParser(optparse.OptionParser):
+    def __init__(self):
+        super(OptionParser, self).__init__()
+
+        self.add_option("-t", "--tray", action="store_true", default=False, dest="tray")
+
+        logfile = os.path.expanduser('~/.config/ScreenGrabber/default.log')
+        self.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
+        self.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
+
+        config = os.path.expanduser('~/.config/ScreenGrabber/default.conf')
+        self.add_option("--config", default=config, dest="config", help="Config file location")
+
+
 if __name__ == "__main__":
-    parser = optparse.OptionParser()
-    parser.add_option("-t", "--tray", action="store_true", default=False, dest="tray")
-
-    logfile = os.path.expanduser('~/.config/ScreenGrabber/default.log')
-    parser.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
-    parser.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
-
-    configfile = os.path.expanduser('~/.config/ScreenGrabber/default.conf')
-    parser.add_option("--config", default=configfile, dest="config", help="Config file location")
-
+    parser = OptionParser()
     (options, args) = parser.parse_args()
 
     log_format = '[%(relativeCreated)d][%(name)s] %(levelname)s - %(message)s'

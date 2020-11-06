@@ -9,8 +9,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
@@ -24,7 +23,7 @@ class ContentTextWidget(QtWidgets.QTextEdit):
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
 
-    @inject.params(config='config', cleaner='cleaner')
+    @hexdi.inject('config', 'cleaner')
     def onActionText(self, event, config, cleaner):
         if int(config.get('content.append', 1)):
             self.append(cleaner(event))

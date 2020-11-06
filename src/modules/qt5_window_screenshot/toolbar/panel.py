@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import functools
 
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
@@ -22,7 +22,7 @@ from PyQt5.QtCore import Qt
 class ToolbarWidget(QtWidgets.QScrollArea):
     actionScreenshot = QtCore.pyqtSignal(object)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config=None):
         super(ToolbarWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -46,54 +46,50 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.addWidget(self.grabber)
 
         self.english = ToolbarButton(self, "English", QtGui.QIcon('icons/english'))
-        self.english.clicked.connect(functools.partial(self.onLanguageChanged, lang='eng'))
+        self.english.clicked.connect(functools.partial(self.onLanguageChanged, 'eng'))
         self.english.clicked.connect(self.reload)
         self.addWidget(self.english)
 
         self.german = ToolbarButton(self, "German", QtGui.QIcon('icons/german'))
-        self.german.clicked.connect(functools.partial(self.onLanguageChanged, lang='deu'))
+        self.german.clicked.connect(functools.partial(self.onLanguageChanged, 'deu'))
         self.german.clicked.connect(self.reload)
         self.addWidget(self.german)
 
         self.spanish = ToolbarButton(self, "Spanish", QtGui.QIcon('icons/spanish'))
-        self.spanish.clicked.connect(functools.partial(self.onLanguageChanged, lang='spa'))
+        self.spanish.clicked.connect(functools.partial(self.onLanguageChanged, 'spa'))
         self.spanish.clicked.connect(self.reload)
         self.addWidget(self.spanish)
 
         self.russian = ToolbarButton(self, "Russian", QtGui.QIcon('icons/russian'))
-        self.russian.clicked.connect(functools.partial(self.onLanguageChanged, lang='rus'))
+        self.russian.clicked.connect(functools.partial(self.onLanguageChanged, 'rus'))
         self.russian.clicked.connect(self.reload)
         self.addWidget(self.russian)
 
         self.ukrainian = ToolbarButton(self, "Ukrainian", QtGui.QIcon('icons/ukrainian'))
-        self.ukrainian.clicked.connect(functools.partial(self.onLanguageChanged, lang='ukr'))
+        self.ukrainian.clicked.connect(functools.partial(self.onLanguageChanged, 'ukr'))
         self.ukrainian.clicked.connect(self.reload)
         self.addWidget(self.ukrainian)
 
         self.belarusian = ToolbarButton(self, "Belarusian", QtGui.QIcon('icons/belarusian'))
         self.belarusian.clicked.connect(self.reload)
-        self.belarusian.clicked.connect(functools.partial(self.onLanguageChanged, lang='bel'))
+        self.belarusian.clicked.connect(functools.partial(self.onLanguageChanged, 'bel'))
         self.addWidget(self.belarusian)
 
-        self.reload()
+        self.reload(None)
 
     def addWidget(self, widget):
         self.container.layout().addWidget(widget, -1)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def reload(self, event=None, config=None):
-        self.english.setChecked(config.get('screenshot.language', 'eng') == 'eng')
-        self.german.setChecked(config.get('screenshot.language', 'eng') == 'deu')
-        self.spanish.setChecked(config.get('screenshot.language', 'eng') == 'spa')
-        self.russian.setChecked(config.get('screenshot.language', 'eng') == 'rus')
-        self.ukrainian.setChecked(config.get('screenshot.language', 'eng') == 'ukr')
-        self.belarusian.setChecked(config.get('screenshot.language', 'eng') == 'bel')
+        self.english.setChecked(config.get('screenshot.language') == 'eng')
+        self.german.setChecked(config.get('screenshot.language') == 'deu')
+        self.spanish.setChecked(config.get('screenshot.language') == 'spa')
+        self.russian.setChecked(config.get('screenshot.language') == 'rus')
+        self.ukrainian.setChecked(config.get('screenshot.language') == 'ukr')
+        self.belarusian.setChecked(config.get('screenshot.language') == 'bel')
 
-    @inject.params(config='config')
-    def onLanguageChanged(self, event=None, lang=None, config=None):
+    @hexdi.inject('config')
+    def onLanguageChanged(self, lang, event, config):
         config.set('screenshot.language', lang)
-        self.reload()
-
-    @inject.params(config='config')
-    def onToggleScreenshot(self, event=None, config=None):
-        config.set('screenshot.enabled', int(event))
+        self.reload(None)

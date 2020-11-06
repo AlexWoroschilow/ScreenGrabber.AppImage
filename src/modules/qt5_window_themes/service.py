@@ -10,66 +10,19 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import os
-import glob
-import inject
-from logging import getLogger
-import platform
+import hexdi
+
+from .theme.manager import ServiceTheme
 
 
-class Theme(object):
-    def __init__(self, path=None, name=None):
-        self.path = path
-        self.name = name
+@hexdi.permanent('themes')
+class ServiceThemeInstance(ServiceTheme):
+    @hexdi.inject('config')
+    def __init__(self, config):
+        themes_default = 'themes/'
+        themes_custom = '~/.config/AOD-Dictionary/themes'
 
-    @property
-    def preview(self):
-        return "{}/preview.png".format(self.path)
-
-    @property
-    def stylesheet(self):
-
-        system = platform.system().lower()
-
-        stylesheet_current = '{}/{}.qss' \
-            .format(self.path, system)
-
-        if os.path.exists(stylesheet_current):
-            return open(stylesheet_current).read()
-
-        stylesheet_default = 'css/{}.qss'.format(system)
-        if os.path.exists(stylesheet_default):
-            return open(stylesheet_default).read()
-        return None
-
-
-class ServiceTheme(object):
-    themes = {}
-
-    def __init__(self, source=None):
-        if source is None: return source
-        for path in source:
-            for source in glob.glob("{}/**/*.qss".format(path)):
-                name = os.path.basename(os.path.dirname(source))
-                self.themes[name] = Theme(os.path.dirname(source), name)
-
-    def get_stylesheets(self):
-        print(self.themes.values())
-        return self.themes.values()
-
-    @inject.params(config='config')
-    def get_stylesheet(self, config=None):
-        if config is None: return None
-
-        theme_current = config.get('themes.theme', 'light')
-
-        stylesheet_current = 'themes/{}/{}.qss'.format(
-            theme_current, platform.system().lower()
-        )
-        if os.path.exists(stylesheet_current):
-            return open(stylesheet_current).read()
-
-        stylesheet_default = 'css/{}.qss'.format(platform.system().lower())
-        if os.path.exists(stylesheet_default):
-            return open(stylesheet_default).read()
-        return None
+        super(ServiceThemeInstance, self).__init__([
+            config.get('themes.default', themes_default),
+            config.get('themes.custom', themes_custom)
+        ])

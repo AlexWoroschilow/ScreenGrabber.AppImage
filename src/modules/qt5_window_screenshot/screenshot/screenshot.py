@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
+# Copyright 2020 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,19 +18,6 @@ from PyQt5.QtCore import Qt
 class Screenshot(QtWidgets.QGraphicsView):
     actionScreenshot = QtCore.pyqtSignal(QtGui.QImage)
     actionClosed = QtCore.pyqtSignal()
-
-    @staticmethod
-    def take_screenshot():
-        loop = QtCore.QEventLoop()
-        shooter = Screenshot()
-        shooter.actionClosed.connect(loop.exit)
-        shooter.show()
-        loop.exec()
-
-        try:
-            return shooter.image
-        except AttributeError as ex:
-            return None
 
     def __init__(self, parent=None):
         super().__init__(parent)

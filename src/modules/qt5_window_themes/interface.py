@@ -10,13 +10,13 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import hexdi
+
+from modules import qt5_window
+from .toolbar.panel import ToolbarWidget
 
 
-class ModuleActions(object):
-
-    @hexdi.inject('config')
-    def resizeActionEvent(self, event=None, config=None):
-        config.set('window.width', event.size().width())
-        config.set('window.height', event.size().height())
-        return event.accept()
+@qt5_window.toolbar(name='Themes', focus=False, position=6)
+def window_toolbar(parent=None):
+    widget = ToolbarWidget()
+    parent.actionReload.connect(widget.reload)
+    return widget

@@ -9,41 +9,29 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import functools
 import glob
 import logging
 import os
 from importlib import util
-
-import inject
 
 
 class Kernel(object):
 
     def __init__(self, options: {} = None, args: [] = None, sources: [] = ["plugins/**", "modules/**"]):
 
-        self.modules = self._modules(
-            sources, options, args
-        )
-
-        inject.configure(functools.partial(
-            self._configure,
-            modules=self.modules,
-            options=options,
-            args=args
-        ))
-
         logger = logging.getLogger('kernel')
-        for module in self.modules:
-            if not hasattr(module, 'bootstrap'):
-                continue
+        for module in self._modules(sources, options, args):
 
-            bootstrap = getattr(module, 'bootstrap')
-            if not callable(bootstrap):
-                continue
+            spec_default = util.find_spec('{}.default'.format(module.__name__))
+            if spec_default and spec_default.loader:
+                logger.debug("loading defaults: {}...".format(module.__name__))
+                spec_default.loader.load_module()
 
+            spec_interface = util.find_spec('{}.interface'.format(module.__name__))
             logger.debug("booting: {}".format(module))
-            bootstrap(options, args)
+            if spec_interface and spec_interface.loader:
+                logger.debug("loading interface: {}...".format(module.__name__))
+                spec_interface.loader.load_module()
 
     def _candidates(self, sources: [] = None):
         for mask in sources:
@@ -72,46 +60,27 @@ class Kernel(object):
 
                 module = spec.loader.load_module()
                 if not module: continue
-                logger.debug("found: {}".format(source))
+                logger.debug("found: {}".format(module.__name__))
 
-                if hasattr(module, 'enabled') and callable(module, 'enabled'):
+                if hasattr(module, 'enabled'):
                     enabled = getattr(module, 'enabled')
+                    if not callable(enabled):
+                        continue
+
                     if not enabled(options, args):
                         continue
 
-                logger.debug("loading: {}".format(module))
+                logger.debug("loading: {}..".format(module.__name__))
                 modules.append(module)
+
+                spec_service = util.find_spec('{}.service'.format(module.__name__))
+                if spec_service and spec_service.loader:
+                    logger.debug("loading services: {}...".format(module.__name__))
+                    spec_service.loader.load_module()
+
 
             except (SyntaxError, RuntimeError) as err:
                 logger.critical("{}: {}".format(source, err))
                 continue
 
         return modules
-
-    def _configure(self, binder: inject.Binder, modules: [], options=None, args=None):
-
-        logger = logging.getLogger('kernel')
-        for module in modules:
-
-            try:
-
-                if not hasattr(module, 'configure'):
-                    continue
-
-                configure = getattr(module, 'configure')
-                if not callable(configure): continue
-
-                logger.debug("configuring: {}".format(module))
-
-                binder.install(functools.partial(
-                    module.configure,
-                    options=options,
-                    args=args
-                ))
-
-            except (SyntaxError, RuntimeError) as err:
-                logger.critical("{}: {}".format(module, err))
-                continue
-
-        binder.bind('logger', logging.getLogger('app'))
-        binder.bind('kernel', self)

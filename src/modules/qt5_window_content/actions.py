@@ -12,30 +12,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 
-import inject
+import hexdi
 from PyQt5 import QtWidgets
 
 from modules.qt5_window_content import signals
 
 
-@inject.params(widget='content.widget')
+@hexdi.inject('content.widget')
 def onActionUndo(event=None, widget=None):
     return widget.undo()
 
 
-@inject.params(widget='content.widget')
+@hexdi.inject('content.widget')
 def onActionRedo(event=None, widget=None):
     return widget.redo()
 
 
-@inject.params(widget='content.widget')
+@hexdi.inject('content.widget')
 def onActionCleanup(event=None, widget=None):
     return widget.clear()
 
 
-@inject.params(config='config', widget='content.widget')
+@hexdi.inject('config', 'content.widget')
 def onActionLoad(parent=None, config=None, widget=None):
-    config_file = config.get('content.file', '')
+    config_file = config.get('content.file')
     if os.path.exists(config_file) and os.path.isfile(config_file):
         parent.setWindowTitle('Screen grabber - {}'.format(os.path.basename(config_file)))
         with open(config_file, 'r') as stream:
@@ -43,18 +43,14 @@ def onActionLoad(parent=None, config=None, widget=None):
             return stream.close()
 
 
-@inject.params(widget='content.widget', config='config', window='window')
-def onActionOpen(event=None, widget=None, config=None, window=None):
+@hexdi.inject('config', 'window', 'content.widget')
+def onActionOpen(event=None, config=None, window=None, widget=None):
     selector = QtWidgets.QFileDialog()
     selector.setDirectory(os.path.expanduser('~'))
     selector.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen)
     if not selector.exec_(): return None
 
     for path in selector.selectedFiles():
-        if not os.path.exists(path):
-            message = widget.tr("Are you sure you want to overwrite the file '%s' ?" % path)
-            return QtWidgets.QMessageBox.question(widget, 'Are you sure?', message)
-
         window.setWindowTitle('Screen grabber - {}'.format(os.path.basename(path)))
         config.set('content.file', path)
         with open(path, 'r') as stream:
@@ -62,9 +58,9 @@ def onActionOpen(event=None, widget=None, config=None, window=None):
             return stream.close()
 
 
-@inject.params(widget='content.widget', config='config', window='window')
-def onActionSave(event=None, widget=None, config=None, window=None):
-    config_file = config.get('content.file', '')
+@hexdi.inject('config', 'window', 'content.widget')
+def onActionSave(event=None, config=None, window=None, widget=None):
+    config_file = config.get('content.file')
     if os.path.exists(config_file) and os.path.isfile(config_file):
         with open(config_file, 'w+') as stream:
             stream.write(widget.text())
@@ -79,13 +75,6 @@ def onActionSave(event=None, widget=None, config=None, window=None):
     if not selector.exec_(): return None
 
     for path in selector.selectedFiles():
-        if len(path) and os.path.exists(path):
-            message = widget.tr("Are you sure you want to overwrite the file '%s' ?" % path)
-            reply = QtWidgets.QMessageBox.question(widget, 'Are you sure?', message, QtWidgets.QMessageBox.Yes,
-                                                   QtWidgets.QMessageBox.No)
-            if reply == QtWidgets.QMessageBox.No:
-                break
-
         window.setWindowTitle('Screen grabber - {}'.format(os.path.basename(path)))
         config.set('content.file', path)
         with open(path, 'w+') as stream:
@@ -96,21 +85,14 @@ def onActionSave(event=None, widget=None, config=None, window=None):
             return signals.actionSaved.activated.emit(path)
 
 
-@inject.params(widget='content.widget', config='config', window='window')
-def onActionExport(event=None, widget=None, config=None, window=None):
+@hexdi.inject('config', 'window', 'content.widget')
+def onActionExport(event=None, config=None, window=None, widget=None):
     selector = QtWidgets.QFileDialog()
     selector.setDirectory(os.path.expanduser('~'))
     selector.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen | QtWidgets.QFileDialog.AcceptSave)
     if not selector.exec_(): return None
 
     for path in selector.selectedFiles():
-        if len(path) and os.path.exists(path):
-            message = widget.tr("Are you sure you want to overwrite the file '%s' ?" % path)
-            reply = QtWidgets.QMessageBox.question(widget, 'Are you sure?', message, QtWidgets.QMessageBox.Yes,
-                                                   QtWidgets.QMessageBox.No)
-            if reply == QtWidgets.QMessageBox.No:
-                break
-
         window.setWindowTitle('Screen grabber - {}'.format(os.path.basename(path)))
         config.set('content.file', path)
         with open(path, 'w+') as stream:

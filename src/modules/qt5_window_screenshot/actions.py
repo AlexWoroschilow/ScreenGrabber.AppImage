@@ -10,17 +10,18 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import logging
+
+import hexdi
+import pytesseract
+from PIL import Image
 from PyQt5 import QtGui
 
 from modules.qt5_window_screenshot import signals
 
 
-@inject.params(config='config', screenshot='screenshot')
+@hexdi.inject('config', 'screenshot')
 def onScreenshot(event=None, config=None, screenshot=None):
-    import logging
-    import pytesseract
-    from PIL import Image
     logger = logging.getLogger('screenshot')
     logger.info('processing...')
 

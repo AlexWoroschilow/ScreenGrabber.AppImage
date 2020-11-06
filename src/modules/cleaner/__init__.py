@@ -9,26 +9,3 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
-
-
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    def _provider():
-        @inject.params(config='config')
-        def clean(text=None, config=None):
-
-            config_enabled = int(config.get('cleaner.enabled', 1))
-            config_lowercase = int(config.get('cleaner.uppercase', 0))
-            config_extrachars = int(config.get('cleaner.extrachars', 0))
-
-            if not config_enabled: return text
-            if config_lowercase: text = text.lower()
-            if not config_extrachars: return text
-
-            text = ''.join(e for e in text if (e.isalpha() or ' '))
-
-            return text
-
-        return clean
-
-    binder.bind_to_provider('cleaner', _provider)

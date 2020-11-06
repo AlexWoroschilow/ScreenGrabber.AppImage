@@ -12,11 +12,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import hexdi
 
+from modules.qt5_window_screenshot import signals
+from . import actions
+from .workspace.dashboard import ContentWidget
 
-class ModuleActions(object):
 
-    @hexdi.inject('config')
-    def resizeActionEvent(self, event=None, config=None):
-        config.set('window.width', event.size().width())
-        config.set('window.height', event.size().height())
-        return event.accept()
+@hexdi.permanent('content.widget')
+class ContentWidgetInstance(ContentWidget):
+    def __init__(self):
+        super(ContentWidgetInstance, self).__init__()
+        self.actionLoaded.connect(actions.onActionLoad)
+        if not hasattr(signals, 'actionText'):
+            return None
+
+        signals.actionScreenshot.activated.connect(self.onActionImage)
+        signals.actionText.activated.connect(self.onActionText)

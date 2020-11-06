@@ -10,10 +10,24 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import hexdi
+from PyQt5 import QtCore
 
-from .service import DictionaryManager
+from .screenshot.screenshot import Screenshot
 
 
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    binder.bind_to_constructor('dictionary', DictionaryManager)
+@hexdi.permanent('screenshot')
+class ScreenshotInstance(object):
+
+    @staticmethod
+    def take_screenshot():
+        loop = QtCore.QEventLoop()
+        shooter = Screenshot()
+        shooter.actionClosed.connect(loop.exit)
+        shooter.show()
+        loop.exec()
+
+        try:
+            return shooter.image
+        except AttributeError as ex:
+            return None

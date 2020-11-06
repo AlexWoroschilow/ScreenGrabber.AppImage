@@ -10,7 +10,7 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-import inject
+import hexdi
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
@@ -26,7 +26,7 @@ class ToolbarWidget(QtWidgets.QScrollArea):
     actionUndo = QtCore.pyqtSignal(object)
     actionRedo = QtCore.pyqtSignal(object)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def __init__(self, config=None):
         super(ToolbarWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -89,12 +89,12 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.cleanup.clicked.connect(self.reload)
         self.addWidget(self.cleanup)
 
-        self.reload()
+        self.reload(None)
 
     def addWidget(self, widget):
         self.container.layout().addWidget(widget)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def reload(self, event=None, config=None):
         self.mode.setChecked(int(config.get('content.append', 1)))
         self.lowercase.setChecked(int(config.get('cleaner.uppercase', 0)))
@@ -109,14 +109,14 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.mode.setText('Append' if self.mode.isChecked() else 'Replace')
         self.mode.setIcon(QtGui.QIcon('icons/append') if self.mode.isChecked() else QtGui.QIcon('icons/replace'))
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def onToggleCleaner(self, event, config=None):
         config.set('cleaner.extrachars', int(event))
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def onToggleLowercase(self, event, config=None):
         config.set('cleaner.uppercase', int(event))
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def onToggleMode(self, event, config=None):
         config.set('content.append', int(event))

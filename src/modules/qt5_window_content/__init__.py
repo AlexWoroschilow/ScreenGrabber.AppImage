@@ -10,27 +10,11 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-import inject
+import hexdi
 from PyQt5 import QtWidgets
 
-from modules.qt5_window_screenshot import signals
 from . import actions
-from .workspace import dashboard
-
-
-def configure(binder: inject.Binder, options: {} = None, args: {} = None):
-    def _constructor():
-        widget = dashboard.ContentWidget()
-        widget.actionLoaded.connect(actions.onActionLoad)
-
-        if not hasattr(signals, 'actionText'): return widget
-        signals.actionScreenshot.activated.connect(widget.onActionImage)
-        signals.actionText.activated.connect(widget.onActionText)
-
-        return widget
-
-    binder.bind_to_constructor('content.widget', _constructor)
+from .workspace.dashboard import ContentWidget
 
 
 def bootstrap(options: {} = None, args: [] = None):
@@ -38,7 +22,7 @@ def bootstrap(options: {} = None, args: [] = None):
     from modules.qt5_window_content import actions
 
     @qt5_window.workspace(name='Content')
-    @inject.params(widget='content.widget')
+    @hexdi.inject('content.widget')
     def window_dashboard(parent=None, widget=None):
 
         widget.actionLoaded.emit(parent)
@@ -61,7 +45,7 @@ def bootstrap(options: {} = None, args: [] = None):
         return widget
 
     @qt5_window.toolbar(name='Content', focus=False, position=1)
-    @inject.params(content='content.widget')
+    @hexdi.inject('content.widget')
     def window_toolbar(parent=None, content=None):
 
         from .toolbar.panel import ToolbarWidget

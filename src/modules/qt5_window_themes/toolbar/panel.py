@@ -12,14 +12,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import functools
 
-import inject
+import hexdi
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 
 class ToolbarWidget(QtWidgets.QScrollArea):
-    @inject.params(themes='themes')
+    @hexdi.inject('themes')
     def __init__(self, themes=None):
         super(ToolbarWidget, self).__init__()
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -38,27 +38,27 @@ class ToolbarWidget(QtWidgets.QScrollArea):
         self.buttons = []
         for theme in themes.get_stylesheets():
             button = ToolbarButton(self, theme.name, QtGui.QIcon(QtGui.QPixmap(theme.preview).scaledToWidth(90)))
-            button.clicked.connect(functools.partial(self.onToggleTheme, theme=theme))
+            button.clicked.connect(functools.partial(self.onToggleTheme, theme))
             button.theme = theme
             self.addWidget(button)
 
             self.buttons.append(button)
 
-        self.reload()
+        self.reload(None)
 
     def addWidget(self, widget):
         self.container.layout().addWidget(widget, -1)
 
-    @inject.params(config='config')
+    @hexdi.inject('config')
     def reload(self, event=None, config=None):
         for button in self.buttons:
             if not button.theme:
                 continue
             button.setChecked(button.theme.name == config.get('themes.theme'))
 
-    @inject.params(config='config', window='window')
-    def onToggleTheme(self, event, theme=None, config=None, window=None):
+    @hexdi.inject('config', 'window')
+    def onToggleTheme(self, theme, event, config, window):
         if not theme: return None
         config.set('themes.theme', theme.name)
         window.setStyleSheet(theme.stylesheet)
-        self.reload()
+        self.reload(None)
