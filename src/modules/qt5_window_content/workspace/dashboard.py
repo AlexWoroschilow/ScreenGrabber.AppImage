@@ -98,12 +98,12 @@ class ContentImageWidget(QtWidgets.QLabel):
         self.setPixmap(pixmap)
 
 
-class ContentWidget(QtWidgets.QTextEdit):
+class ContentWidget(QtWidgets.QWidget):
     actionLoaded = QtCore.pyqtSignal(object)
 
     def __init__(self):
         super(ContentWidget, self).__init__()
-        self.setAlignment(Qt.AlignTop)
+        # self.setAlignment(Qt.AlignTop)
         self.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(QtWidgets.QGridLayout())

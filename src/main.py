@@ -1,7 +1,4 @@
-#!/usr/bin/python3
-
-import optparse
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +12,8 @@ import optparse
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 import os
 import sys
-
+import optparse
+import logging
 import hexdi
 
 os.chdir(os.path.dirname(
@@ -23,7 +21,6 @@ os.chdir(os.path.dirname(
         if len(sys.argv) else \
         os.path.abspath(__file__)))
 
-import logging
 
 from modules.qt5_application import desktop
 
