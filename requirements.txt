@@ -6,3 +6,4 @@ wheel
 pytesseract
 pyscreenshot
 hexdi
+Pillow
