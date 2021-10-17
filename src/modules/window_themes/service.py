@@ -54,14 +54,13 @@ class ServiceTheme(object):
                 self.themes[name] = Theme(os.path.dirname(source), name)
 
     def get_stylesheets(self):
-        print(self.themes.values())
         return self.themes.values()
 
     @inject.params(config='config')
     def get_stylesheet(self, config=None):
         if config is None: return None
 
-        theme_current = config.get('themes.theme', 'light')
+        theme_current = config.get('themes.theme', 'Flat')
 
         stylesheet_current = 'themes/{}/{}.qss'.format(
             theme_current, platform.system().lower()

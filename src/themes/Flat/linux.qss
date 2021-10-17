@@ -9,25 +9,21 @@ WindowContent QTabBar::tab:selected { background: #fafafa; border-right: 2px sol
 WindowContent QTabBar::tab:!selected { background: #fafafa; }
 WindowContent QTabBar::close-button { image: url(icons/close); }
 
-QHeaderView::section { background:#ffffff; }
-QDialog { background: #ffffff; border: 0px; }
-QDialog QTextEdit {	background: #fff; border: 1px solid #e4e4e4; margin: 0px; padding: 5px 15px; }
-
 QMenu { background-color: #ffffff; border: 1px solid #d0d0d0; }
 QMenu::item { padding: 5px 25px 5px 30px; border: 1px solid transparent; color: #4a4a4a; }
 QMenu::icon { padding: 0px 5px 0px 5px; }
 QMenu::item:selected { border-color: #e4e4e4; background: #e4e4e4; }
 QMenu::icon:checked { background: #ffffff; border: 1px inset #ffffff; position: absolute; top: 1px; right: 1px; bottom: 1px; left: 1px; }
 
-QToolButton { background: #ffffff; border: 2px solid #ffffff; border-radius: 3px; margin: 0px; color: #4d5357; font-size: 14px;  }
-QToolButton::checked { background: #f3f3f3; border: 1px solid #e4e4e4; border-radius: 3px; }
+QToolButton { background: #ffffff; border: 2px solid #ffffff; border-radius: 3px; margin: 0px; color: #4d5357; font-size: 14px; }
+QToolButton::checked { background: #f3f3f3; border: 1px solid #2ca7f8; border-radius: 3px; }
 
 ToolbarWidget { background: #fafafa; margin: 0px; border-bottom: 1px solid #4f4f4f;}
 ToolbarWidget QWidget { background: #fafafa; border: none; }
 
 ToolbarWidget::pane { background: #fafafa; border: none; margin: 0px; border-bottom: 1px solid #d0e8fa; }
 ToolbarWidget::tab-bar { left: 0px; color: #4f4f4f; border: none; }
-ToolbarWidget QTabBar { background: #fafafa; color: #4f4f4f; font-size: 14px;  }
+ToolbarWidget QTabBar { background: #fafafa; color: #4f4f4f; font-size: 14px; }
 ToolbarWidget QTabBar::tab:selected { background: #fafafa; border-bottom: 1px solid #2ca7f8; border-right: none;  color: #4d5357;  }
 ToolbarWidget QTabBar::tab { background: #ffffff; color: #4d5357; border-bottom: 1px solid #fafafa; border-right: none; padding: 5px 15px; }
 ToolbarWidget QTabBar::close-button { image: url(icons/close); }

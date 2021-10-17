@@ -26,7 +26,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None, themes=None):
         super(MainWindow, self).__init__(parent)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setWindowTitle('Screen grabber')
+        self.setWindowTitle('Screengrabber')
 
         if os.path.exists('icons/hand.svg'):
             self.setWindowIcon(QtGui.QIcon("icons/hand"))

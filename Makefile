@@ -39,7 +39,8 @@ appimage:
 										tesseract-ocr-dan tesseract-ocr-ell tesseract-ocr-est tesseract-ocr-heb tesseract-ocr-hin \
 										tesseract-ocr-hrv tesseract-ocr-hun tesseract-ocr-isl tesseract-ocr-lav tesseract-ocr-lit \
 										tesseract-ocr-nld tesseract-ocr-nor tesseract-ocr-pol tesseract-ocr-por tesseract-ocr-slk \
-										tesseract-ocr-slv tesseract-ocr-sqi tesseract-ocr-srp tesseract-ocr-swe
+										tesseract-ocr-slv tesseract-ocr-sqi tesseract-ocr-srp tesseract-ocr-swe tesseract-ocr-chi-sim \
+										tesseract-ocr-chi-tra tesseract-ocr-jpn tesseract-ocr-ara
 
 	echo '#cd $${OWD}'                                                                      >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo 'case "$${1}" in'                                                                  >> $(PWD)/build/Boilerplate.AppDir/AppRun

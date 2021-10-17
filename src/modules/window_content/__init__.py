@@ -61,7 +61,7 @@ class Loader(object):
 
             return widget
 
-        @window.toolbar(name='Content', focus=False, position=1)
+        @window.toolbar(name='Grabbed text', focus=False, position=1)
         @inject.params(content='content.widget')
         def window_toolbar(parent=None, content=None):
 

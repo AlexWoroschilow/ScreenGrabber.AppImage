@@ -16,17 +16,20 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
 
-class ToolbarButton(QtWidgets.QToolButton):
-    def __init__(self, parent=None, text=None, icon=None):
-        super(ToolbarButton, self).__init__(parent)
+class ToolbarLanguageButton(QtWidgets.QToolButton):
+    def __init__(self, parent=None, text=None, icon=None, code=None):
+        super(ToolbarLanguageButton, self).__init__(parent)
         assert (text is not None)
         assert (icon is not None)
+        assert (code is not None)
+
+        self.code = code
 
         self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.setIconSize(QtCore.QSize(28, 28))
+        self.setIconSize(QtCore.QSize(20, 20))
         self.setIcon(QtGui.QIcon(icon))
-        self.setMinimumWidth(90)
-        self.setCheckable(False)
+        self.setMinimumWidth(28)
+        self.setMaximumHeight(24)
+        self.setCheckable(True)
         self.setToolTip(text)
-        self.setText(text)

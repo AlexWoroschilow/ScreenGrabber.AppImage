@@ -36,7 +36,7 @@ class Loader(object):
         shortcut = QtWidgets.QShortcut("Ctrl+G", parent)
         shortcut.activated.connect(actions.onScreenshot)
 
-        @window.toolbar(name='Screenshot', focus=True, position=0)
+        @window.toolbar(name='Grabbed picture', focus=True, position=0)
         def window_toolbar(parent=None):
             from .toolbar.panel import ToolbarWidget
             widget = ToolbarWidget()
