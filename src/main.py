@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-
-# -*- coding: utf-8 -*-
 # Copyright 2015 Alex Woroschilow (alex.woroschilow@gmail.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,64 +10,43 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+import logging
+import optparse
 import os
 import sys
-from importlib import util
 
-os.chdir(os.path.dirname(
-    os.path.abspath(sys.argv[0]) \
-        if len(sys.argv) else \
-        os.path.abspath(__file__)))
+import hexdi
 
-import inject
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+abspath = sys.argv[0] \
+    if len(sys.argv) else \
+    os.path.abspath(__file__)
+os.chdir(os.path.dirname(abspath))
 
-import optparse
-import logging
+from modules.qt5 import application
 
 
-class Application(QtWidgets.QApplication):
-    kernel = None
+@hexdi.permanent('optparse')
+class OptionParser(optparse.OptionParser):
+    def __init__(self):
+        super(OptionParser, self).__init__()
 
-    def __init__(self, options=None, args=None):
-        super(Application, self).__init__(sys.argv)
-        self.setAttribute(Qt.AA_UseHighDpiPixmaps)
+        self.add_option("-t", "--tray", action="store_true", default=False, dest="tray")
 
-        self.setApplicationName('Screen grabber')
+        logfile = os.path.expanduser('~/.config/Screengrabber/default.log')
+        self.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
+        self.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
 
-        spec = util.find_spec('lib.kernel')
-        module = spec.loader.load_module()
-        if module is None: return None
-
-        self.kernel = module.Kernel(options, args)
-
-    @inject.params(window='window')
-    def exec_(self, options, args, window):
-        if window is None:
-            return None
-
-        window.exit.connect(self.exit)
-        window.show()
-
-        return super(Application, self).exec_()
+        configfile = os.path.expanduser('~/.config/Screengrabber/default.conf')
+        self.add_option("--config", default=configfile, dest="config", help="Config file location")
 
 
 if __name__ == "__main__":
-    parser = optparse.OptionParser()
-    parser.add_option("-t", "--tray", action="store_true", default=False, dest="tray")
-
-    logfile = os.path.expanduser('~/.config/ScreenGrabber/default.log')
-    parser.add_option("--logfile", default=logfile, dest="logfile", help="Logfile location")
-    parser.add_option("--loglevel", default=logging.DEBUG, dest="loglevel", help="Logging level")
-
-    configfile = os.path.expanduser('~/.config/ScreenGrabber/default.conf')
-    parser.add_option("--config", default=configfile, dest="config", help="Config file location")
+    parser = OptionParser()
 
     (options, args) = parser.parse_args()
 
     log_format = '[%(relativeCreated)d][%(name)s] %(levelname)s - %(message)s'
     logging.basicConfig(level=options.loglevel, format=log_format)
 
-    application = Application(options, args)
+    application = application.Application(options, args)
     sys.exit(application.exec_(options, args))
