@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 PWD := $(shell pwd)
 SHELL := /usr/bin/bash
-APPDIR := ./AppDir
 GLIBC_VERSION := $(shell getconf GNU_LIBC_VERSION | sed 's/ /-/g' )
 ICONS := $(shell ls src/icons | grep svg)
 .PHONY: all
@@ -42,7 +41,10 @@ appimage:
 										tesseract-ocr-slv tesseract-ocr-sqi tesseract-ocr-srp tesseract-ocr-swe tesseract-ocr-chi-sim \
 										tesseract-ocr-chi-tra tesseract-ocr-jpn tesseract-ocr-ara
 
-	echo '#cd $${OWD}'                                                                      >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'TESSDATA_PREFIX=$${APPDIR}/share/tesseract-ocr/4.00/tessdata'                     >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'export TESSDATA_PREFIX=$${TESSDATA_PREFIX}'                                       >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo ''                                                                                 >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo ''                                                                                 >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo 'case "$${1}" in'                                                                  >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo "  '--python') exec \$${APPDIR}/bin/python3.8 \$${*:2} ;;"                         >> $(PWD)/build/Boilerplate.AppDir/AppRun
 	echo '  *)   $${APPDIR}/bin/python3.8 $${APPDIR}/application/main.py $${@} ;;'          >> $(PWD)/build/Boilerplate.AppDir/AppRun
@@ -78,6 +80,6 @@ clean: $(shell rm -rf $(PWD)/build)
 
 $(ICONS):
 	rm -f src/icons/`echo $@ | sed -e 's/svg/png/'`
-	inkscape src/icons/$@ --export-dpi=96 --export-filename=src/icons/`echo $@ | sed -e 's/svg/png/'`
+	inkscape src/icons/$@ --export-dpi=256 --export-filename=src/icons/`echo $@ | sed -e 's/svg/png/'`
 
 
