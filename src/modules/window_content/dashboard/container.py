@@ -15,9 +15,8 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
-from .editor import ContentTextContainerWidget
+from .editor.widget import TextEditorWidget
 from .image import ContentImageWidget
-from .label import ContendEditorStatusWidget
 
 
 class ContentWidget(QtWidgets.QTextEdit):
@@ -32,14 +31,11 @@ class ContentWidget(QtWidgets.QTextEdit):
         self.layout().setAlignment(Qt.AlignTop)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        self.editor = ContentTextContainerWidget()
+        self.editor = TextEditorWidget()
         self.preview = ContentImageWidget()
-
-        self.statistic = ContendEditorStatusWidget()
 
         self.layout().addWidget(self.preview)
         self.layout().addWidget(self.editor)
-        # self.layout().addWidget(self.statistic, 9, 1, 1, 1)
 
         self.actionLoaded.emit(())
 

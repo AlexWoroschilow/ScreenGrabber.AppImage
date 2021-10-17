@@ -30,6 +30,8 @@ ToolbarWidget QTabBar::close-button { image: url(icons/close); }
 
 ContentWidget { border: none; background-color: #c0c0c0; }
 ContentWidget ContentImageWidget { margin: 0.5em 1.2em; background-color: #ffffff; border-radius: 3px; }
-ContentWidget ContentTextContainerWidget { background-color: #ffffff; margin:0px; padding: 0px; border: none; }
-ContentWidget ContentTextContainerWidget QLabel { color: #4d5357; border: none; padding:0px; font-size: 10px; }
-ContentWidget ContentTextContainerWidget ContentTextWidget { font-size: 12px; color: #4d5357; border: 2px solid #ffffff; }
+ContentWidget TextEditorWidget { background-color: #ffffff; margin:0px; padding: 0px; border-left: 3px solid #ffffff; }
+ContentWidget TextEditorWidget ContentTextWidget { font-size: 12px; color: #4d5357; border: 2px solid #ffffff; }
+ContentWidget TextEditorWidget QLabel { color: #4d5357; border: none; padding:5px; font-size: 10px; background: #fafafa; }
+ContentWidget TextEditorWidget FormatbarWidget { background: #fafafa; }
+ContentWidget TextEditorWidget ToolBarWidgetRight { background: #fafafa; }
