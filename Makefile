@@ -16,13 +16,12 @@ GLIBC_VERSION := $(shell getconf GNU_LIBC_VERSION | sed 's/ /-/g' )
 ICONS := $(shell ls src/icons | grep svg)
 .PHONY: all
 
-all: appimage clean
+all: init appimage clean
 
 init:
 	rm -rf $(PWD)/venv
 	python3 -m venv --copies $(PWD)/venv
 	source $(PWD)/venv/bin/activate && python3 -m pip install -r $(PWD)/requirements.txt
-
 
 appimage:
 
@@ -67,24 +66,6 @@ appimage:
 	cp --force $(PWD)/AppDir/*.svg 		  	$(PWD)/build/Boilerplate.AppDir 			|| true
 	cp --force $(PWD)/AppDir/*.desktop 		$(PWD)/build/Boilerplate.AppDir 			|| true
 	cp --force $(PWD)/AppDir/*.png 		  	$(PWD)/build/Boilerplate.AppDir 			|| true
-
-#	wget  --output-document=$(PWD)/build/build.rpm  https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-5.14.2-5.fc32.x86_64.rpm
-#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-#
-#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-gui-5.14.2-5.fc32.x86_64.rpm
-#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-#
-#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtx11extras-5.14.2-1.fc32.x86_64.rpm
-#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-#
-#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-5.14.2-3.fc32.x86_64.rpm
-#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-#
-#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-base-5.14.2-3.fc32.x86_64.rpm
-#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-#
-#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/p/python3-pyqt5-sip-4.19.21-1.fc32.x86_64.rpm
-#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
 
 	export ARCH=x86_64 && $(PWD)/bin/appimagetool-x86_64.AppImage $(PWD)/build/Boilerplate.AppDir $(PWD)/Screengrabber.AppImage
 	chmod +x $(PWD)/Screengrabber.AppImage
