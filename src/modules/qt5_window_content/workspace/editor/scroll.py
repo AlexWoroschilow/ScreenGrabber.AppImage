@@ -10,12 +10,11 @@
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
-from .text import TextEditor
+from .text import ContentTextWidget
 
 
 class TextWriter(QtWidgets.QScrollArea):
@@ -56,7 +55,7 @@ class TextWriter(QtWidgets.QScrollArea):
         self.layout().setContentsMargins(20, 20, 20, 20)
         self.layout().setAlignment(Qt.AlignHCenter)
 
-        self.text = TextEditor(self)
+        self.text = ContentTextWidget(self)
         self.printAction.connect(self.text.printEvent)
         self.previewAction.connect(self.text.previewEvent)
         self.cutAction.connect(self.text.cut)

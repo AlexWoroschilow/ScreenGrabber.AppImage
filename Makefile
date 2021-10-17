@@ -56,7 +56,6 @@ appimage:
 
 	cp -r --force $(PWD)/src/default        $(PWD)/build/Boilerplate.AppDir/application/
 	cp -r --force $(PWD)/src/icons          $(PWD)/build/Boilerplate.AppDir/application/
-	cp -r --force $(PWD)/src/lib            $(PWD)/build/Boilerplate.AppDir/application/
 	cp -r --force $(PWD)/src/modules        $(PWD)/build/Boilerplate.AppDir/application/
 	cp -r --force $(PWD)/src/themes         $(PWD)/build/Boilerplate.AppDir/application/
 	cp -r --force $(PWD)/src/main.py        $(PWD)/build/Boilerplate.AppDir/application/

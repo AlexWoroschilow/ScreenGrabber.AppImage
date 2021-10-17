@@ -1,7 +1,5 @@
 altgraph==0.17
 cssselect==1.1.0
-Inject
-inject
 hexdi
 lxml==4.4.2
 pyquery==1.4.1
