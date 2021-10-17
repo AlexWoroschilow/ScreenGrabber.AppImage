@@ -4,5 +4,7 @@ Inject
 lxml==4.4.2
 pyquery==1.4.1
 wheel
-pytesseract
+pytesseract==0.3.7
 pyscreenshot
+PyQt5
+inject

@@ -25,10 +25,10 @@ class Loader(object):
 
     def _constructor(self):
         from modules.window_screenshot import signals
-        from modules.window_content import dashboard
+        from modules.window_content.dashboard import container
         from modules.window_content import actions
 
-        widget = dashboard.ContentWidget()
+        widget = container.ContentWidget()
         widget.actionLoaded.connect(actions.onActionLoad)
 
         if not hasattr(signals, 'actionText'): return widget
@@ -44,7 +44,7 @@ class Loader(object):
         from modules import window
         from modules.window_content import actions
 
-        @window.workspace(name='Content')
+        @window.workspace(name='Grab the screen area to get the text')
         @inject.params(widget='content.widget')
         def window_dashboard(parent=None, widget=None):
 
