@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Screen Grabber
+Name=Screengrabber
 Exec=AppRun
-Icon=icon
+Icon=screengrabber
 Type=Application
 Categories=Utility;

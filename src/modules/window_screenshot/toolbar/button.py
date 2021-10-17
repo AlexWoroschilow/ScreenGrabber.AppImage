@@ -26,7 +26,7 @@ class ToolbarButton(QtWidgets.QToolButton):
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.setIconSize(QtCore.QSize(28, 28))
         self.setIcon(QtGui.QIcon(icon))
-        self.setFixedWidth(90)
+        self.setMinimumWidth(90)
         self.setCheckable(True)
         self.setToolTip(text)
         self.setText(text)

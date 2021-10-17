@@ -1,3 +1,14 @@
+# Copyright 2020 Alex Woroschilow (alex.woroschilow@gmail.com)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 PWD := $(shell pwd)
 SHELL := /usr/bin/bash
 APPDIR := ./AppDir
@@ -15,118 +26,69 @@ init:
 
 appimage:
 
-	rm -rf $(PWD)/build
-	mkdir -p $(PWD)/build
-	mkdir -p $(PWD)/build/AppDir
-	mkdir -p $(PWD)/build/AppDir/application
-	mkdir -p $(PWD)/build/AppDir/python
-	mkdir -p $(PWD)/build/AppDir/vendor
+	mkdir --parents $(PWD)/build/Boilerplate.AppDir/application
+	mkdir --parents $(PWD)/build/Boilerplate.AppDir/vendor
 
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-3.8.0-6.module_el8.2.0+317+61fa6e7d.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	apprepo --destination=$(PWD)/build appdir boilerplate python3.8 python3.8-dev python3.8-psutil python3-xlib libxcb1 \
+										python3.8-setuptools python3-pip python3-dnf python3-apt python3-xdg libicu66 \
+										python3-distutils python3-distutils-extra python3-gi python3-dbus python3-cairo \
+										python3-pyqt5 python3-pyqt5.qtsvg python3-pyqt5.qtx11extras python3-pyqt5.qtquick python3-pyqt5.sip \
+										openssl libffi7 intltool libgudev-1.0-0 libffi libgudev gir1.2-gudev-1.0 \
+										zlib1g libleptonica-dev libjpeg-turbo8 libwebp6 libpcre2-16-0 \
+										tesseract-ocr tesseract-ocr-bel tesseract-ocr-rus tesseract-ocr-ukr  tesseract-ocr-eng \
+										tesseract-ocr-deu tesseract-ocr-spa tesseract-ocr-fra tesseract-ocr-ita tesseract-ocr-fin \
+										tesseract-ocr-dan tesseract-ocr-ell tesseract-ocr-est tesseract-ocr-heb tesseract-ocr-hin \
+										tesseract-ocr-hrv tesseract-ocr-hun tesseract-ocr-isl tesseract-ocr-lav tesseract-ocr-lit \
+										tesseract-ocr-nld tesseract-ocr-nor tesseract-ocr-pol tesseract-ocr-por tesseract-ocr-slk \
+										tesseract-ocr-slv tesseract-ocr-sqi tesseract-ocr-srp tesseract-ocr-swe
 
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-devel-3.8.0-6.module_el8.2.0+317+61fa6e7d.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	echo '#cd $${OWD}'                                                                      >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'case "$${1}" in'                                                                  >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo "  '--python') exec \$${APPDIR}/bin/python3.8 \$${*:2} ;;"                         >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo '  *)   $${APPDIR}/bin/python3.8 $${APPDIR}/application/main.py $${@} ;;'          >> $(PWD)/build/Boilerplate.AppDir/AppRun
+	echo 'esac'                                                                             >> $(PWD)/build/Boilerplate.AppDir/AppRun
 
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/aarch64/os/Packages/python38-pip-19.2.3-5.module_el8.2.0+317+61fa6e7d.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	source $(PWD)/venv/bin/activate && python3 -m pip install -r $(PWD)/requirements.txt --target=$(PWD)/build/Boilerplate.AppDir/vendor --upgrade
+	source $(PWD)/venv/bin/activate && python3 -m pip uninstall typing -y || true
+	rm -rf $(PWD)/build/Boilerplate.AppDir/vendor/typing.py || true
 
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-setuptools-41.6.0-4.module_el8.2.0+317+61fa6e7d.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	cp -r --force $(PWD)/src/default        $(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/icons          $(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/lib            $(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/modules        $(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/themes         $(PWD)/build/Boilerplate.AppDir/application/
+	cp -r --force $(PWD)/src/main.py        $(PWD)/build/Boilerplate.AppDir/application/
 
-	wget --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/8/AppStream/x86_64/os/Packages/python38-libs-3.8.0-6.module_el8.2.0+317+61fa6e7d.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.desktop 		|| true
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.png 		  	|| true
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.svg 		  	|| true
+	rm -f $(PWD)/build/Boilerplate.AppDir/*.jpg 		  	|| true
 
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/t/tesseract-4.1.0-1.el8.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	cp --force $(PWD)/AppDir/*.svg 		  	$(PWD)/build/Boilerplate.AppDir 			|| true
+	cp --force $(PWD)/AppDir/*.desktop 		$(PWD)/build/Boilerplate.AppDir 			|| true
+	cp --force $(PWD)/AppDir/*.png 		  	$(PWD)/build/Boilerplate.AppDir 			|| true
 
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/t/tesseract-4.1.1-2.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+#	wget  --output-document=$(PWD)/build/build.rpm  https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-5.14.2-5.fc32.x86_64.rpm
+#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+#
+#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-gui-5.14.2-5.fc32.x86_64.rpm
+#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+#
+#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtx11extras-5.14.2-1.fc32.x86_64.rpm
+#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+#
+#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-5.14.2-3.fc32.x86_64.rpm
+#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+#
+#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-base-5.14.2-3.fc32.x86_64.rpm
+#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+#
+#	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/p/python3-pyqt5-sip-4.19.21-1.fc32.x86_64.rpm
+#	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
 
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/t/tesseract-langpack-bel-4.0.0-9.fc32.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
+	export ARCH=x86_64 && $(PWD)/bin/appimagetool-x86_64.AppImage $(PWD)/build/Boilerplate.AppDir $(PWD)/Screengrabber.AppImage
+	chmod +x $(PWD)/Screengrabber.AppImage
 
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/t/tesseract-langpack-rus-4.0.0-9.fc32.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/t/tesseract-langpack-ukr-4.0.0-9.fc32.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/t/tesseract-langpack-eng-4.0.0-9.fc32.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/t/tesseract-langpack-deu-4.0.0-9.fc32.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/t/tesseract-langpack-spa-4.0.0-9.fc32.noarch.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget  --output-document=$(PWD)/build/build.rpm  http://mirror.centos.org/centos/7/os/x86_64/Packages/libffi-3.0.13-19.el7.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget  --output-document=$(PWD)/build/build.rpm  https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/l/libicu-65.1-2.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget  --output-document=$(PWD)/build/build.rpm  https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-5.14.2-5.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtbase-gui-5.14.2-5.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtx11extras-5.14.2-1.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-5.14.2-3.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/python3-qt5-base-5.14.2-3.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/p/python3-pyqt5-sip-4.19.21-1.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/q/qt5-qtsvg-5.14.2-1.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/aarch64/Packages/q/qt5-qtwayland-5.14.2-4.fc32.aarch64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/z/zlib-1.2.11-21.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/p/pcre2-utf16-10.35-7.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/l/libxcb-1.13.1-4.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/l/leptonica-1.79.0-2.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/l/libjpeg-turbo-2.0.4-3.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-	wget --output-document=$(PWD)/build/build.rpm https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/32/Everything/x86_64/Packages/l/libwebp-1.1.0-3.fc32.x86_64.rpm
-	cd $(PWD)/build && rpm2cpio $(PWD)/build/build.rpm | cpio -idmv && cd ..
-
-
-
-	cp -r --force $(PWD)/AppDir/* $(PWD)/build/AppDir/
-	cp -r --force $(PWD)/build/usr/* $(PWD)/build/AppDir/python/
-	cp -r --force $(PWD)/build/usr/lib64/qt5/plugins/platforms $(PWD)/build/AppDir/python/bin/
-	cp -r --force $(PWD)/src/default $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/icons $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/lib $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/modules $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/themes $(PWD)/build/AppDir/application/
-	cp -r --force $(PWD)/src/main.py $(PWD)/build/AppDir/application/
-
-	mkdir -p $(PWD)/build/AppDir/vendor
-	$(PWD)/build/AppDir/AppRun --python -m pip install  -r $(PWD)/requirements.txt --target=$(PWD)/build/AppDir/vendor --upgrade
-	$(PWD)/build/AppDir/AppRun --python -m pip uninstall typing -y
-
-	export ARCH=x86_64 && $(PWD)/bin/appimagetool-x86_64.AppImage  $(PWD)/build/AppDir $(PWD)/ScreenGrabber.AppImage
-	make clean
 
 icons: $(ICONS)
 clean: $(shell rm -rf $(PWD)/build)
