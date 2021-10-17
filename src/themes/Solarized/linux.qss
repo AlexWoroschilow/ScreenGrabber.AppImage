@@ -25,7 +25,7 @@ ToolbarWidget QWidget { background: #eee8d5; border: none; }
 ToolbarWidget::pane { border: none; margin: 0px; border-bottom: 1px solid #cec8b5; }
 ToolbarWidget::tab-bar { left: 0px; color: #4f4f4f; border: none; }
 ToolbarWidget QTabBar { background: #fafafa; color: #4f4f4f; font-size: 14px;  }
-ToolbarWidget QTabBar::tab:selected { background: #eee8d5; border-bottom: 1px solid #cec8b5; border-right: none;  color: #4d5357;  }
+ToolbarWidget QTabBar::tab:selected { background: #eee8d5; border-bottom: 1px solid #cec8b5; border-right: none;  color: #4d5357;  padding: 5px 15px;  }
 ToolbarWidget QTabBar::tab { background: #fdf6e3; color: #4d5357; border-bottom: 1px solid #fafafa; border-right: none; padding: 5px 15px; }
 ToolbarWidget QTabBar::close-button { image: url(icons/close); }
 
