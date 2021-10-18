@@ -25,7 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, themes=None, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setWindowTitle('Performance optimizer')
+        self.setWindowTitle('Screengrabber')
 
         if os.path.exists('icons/hand.svg'):
             self.setWindowIcon(QtGui.QIcon("icons/hand"))
